@@ -1,11 +1,23 @@
 package com.maddob.madroute.domain;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
-import javax.persistence.Entity;
+import java.time.LocalDate;
+import java.time.LocalTime;
 
 @Data
-@Entity
+@EqualsAndHashCode
 public class GpsPosition {
-    // TODO: Define GpsPosition and continue with the parser
+
+    private Double latitude;
+    private Double longitude;
+    private LocalDate date;
+    private LocalTime time;
+    private Double velocity;
+    private Boolean fixed;
+    private Integer quality;
+    private Double direction;
+    private Double altitude;
+
 }
