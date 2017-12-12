@@ -27,7 +27,7 @@ public class NMEAParserTest {
                 "text/plain", "@Sonygpsoption/0/20171105133446.000/20171105133446.178/".getBytes());
 
         // when
-        List<GpsPosition> gpsPositionList = parser.parseFile(file);
+        List<GpsPosition> gpsPositionList = parser.parse(file);
 
         // then
         assertTrue(gpsPositionList.isEmpty());
@@ -40,7 +40,7 @@ public class NMEAParserTest {
                 "$GPRMC,133446.178,A,4237.4355,N,2322.0657,E,12.17,,051117,,,A*7F".getBytes());
 
         // when
-        List<GpsPosition> gpsPositionList = parser.parseFile(file);
+        List<GpsPosition> gpsPositionList = parser.parse(file);
 
         // then
         assertFalse("The list shall not be empty", gpsPositionList.isEmpty());
@@ -74,10 +74,34 @@ public class NMEAParserTest {
                 stringBuffer.toString().getBytes());
 
         // when
-        List<GpsPosition> gpsPositionList = parser.parseFile(file);
+        List<GpsPosition> gpsPositionList = parser.parse(file);
 
         // then
         assertFalse("The list shall not be empty", gpsPositionList.isEmpty());
         assertEquals("The list shall contain 3 GpsPosition objects", 3, gpsPositionList.size());
+    }
+
+    @Test
+    public void testParserWithByteArray() {
+        // given a valid single GPRMC NMEA record is contained in the byte array
+        byte[] bytes = "$GPRMC,133446.178,A,4237.4355,N,2322.0657,E,12.17,,051117,,,A*7F".getBytes();
+        Byte[] wrappedBytes = new Byte[bytes.length];
+        for (int i = 0; i < bytes.length; i++) {
+            wrappedBytes[i] = bytes[i];
+        }
+
+        // when
+        List<GpsPosition> gpsPositionList = parser.parse(wrappedBytes);
+
+        // then
+        assertFalse("The list shall not be empty", gpsPositionList.isEmpty());
+        assertEquals("The list shall contain only 1 GpsPosition object", 1, gpsPositionList.size());
+        GpsPosition gpsPosition = gpsPositionList.get(0);
+        assertNotNull("The GpsPosition object shall not be null", gpsPosition);
+        assertTrue(0.0001 > gpsPosition.getLatitude() - 42.623925);
+        assertTrue(0.0001 > gpsPosition.getLongitude() - 23.367762);
+        assertEquals(gpsPosition.getVelocity(), new Double(12.17));
+        assertEquals(LocalTime.of(13, 34, 46), gpsPosition.getTime());
+        assertEquals(LocalDate.of(2017, 11, 5), gpsPosition.getDate());
     }
 }

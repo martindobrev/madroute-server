@@ -15,7 +15,7 @@ public class NMEAParser {
 
     private static final String GPRMC = "$GPRMC";
 
-    public List<GpsPosition> parseFile(MultipartFile file) {
+    public List<GpsPosition> parse(MultipartFile file) {
         List<GpsPosition> gpsPositions = new ArrayList<>();
         try {
             BufferedReader in = new BufferedReader(new InputStreamReader(file.getInputStream()));
@@ -30,7 +30,31 @@ public class NMEAParser {
             e.printStackTrace();
         }
 
+        return gpsPositions;
+    }
 
+    public List<GpsPosition> parse(Byte[] bytes) {
+        List<GpsPosition> gpsPositions = new ArrayList<>();
+        if (bytes.length > 0) {
+            byte[] byteArray = new byte[bytes.length];
+            int i = 0;
+            for (Byte wrappedByte : bytes) {
+                byteArray[i++] = wrappedByte;
+            }
+
+            try {
+                BufferedReader in = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(byteArray)));
+                String line;
+                while ((line = in.readLine()) != null) {
+                    GpsPosition position = this.parseNMEALine(line);
+                    if (position != null) {
+                        gpsPositions.add(position);
+                    }
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
         return gpsPositions;
     }
 
