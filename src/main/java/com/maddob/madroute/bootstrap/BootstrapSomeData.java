@@ -2,26 +2,25 @@ package com.maddob.madroute.bootstrap;
 
 import com.maddob.madroute.domain.MadRoute;
 import com.maddob.madroute.repositories.MadRouteRepository;
+import org.apache.tomcat.util.http.fileupload.IOUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 
 @Component
 public class BootstrapSomeData implements ApplicationListener<ContextRefreshedEvent> {
 
-    private final String[] validNmeaRecords = new String[] {
-            "$GPRMC,133446.178,A,4237.4355,N,2322.0657,E,12.17,,051117,,,A*7F",
-            "$GPGGA,133447.180,4237.4356,N,2322.0619,E,1,0,,,M,,M,,*44",
-            "$GPRMC,133447.180,A,4237.4356,N,2322.0619,E,9.73,,051117,,,A*48",
-            "$GPGGA,133448.180,4237.4348,N,2322.0579,E,1,0,,,M,,M,,*41",
-            "$GPRMC,133448.180,A,4237.4348,N,2322.0579,E,9.08,,051117,,,A*41"
-    };
-
+    @Value(value = "classpath:bootstrap/17110502.LOG")
+    private Resource gpsDataTestRide;
 
     private final MadRouteRepository madRouteRepository;
-
-
 
     public BootstrapSomeData(MadRouteRepository madRouteRepository) {
         this.madRouteRepository = madRouteRepository;
@@ -30,23 +29,27 @@ public class BootstrapSomeData implements ApplicationListener<ContextRefreshedEv
     @Override
     @Transactional
     public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {
-        final StringBuilder stringBuilder = new StringBuilder();
-        for (String someValidRecord : validNmeaRecords) {
-            stringBuilder.append(someValidRecord).append(System.lineSeparator());
-        }
+        final MadRoute sofiaRide = new MadRoute();
+        sofiaRide.setDescription("First test ride in Sofia");
+        sofiaRide.setLocation("Sofia, Bulgaria");
+        sofiaRide.setName("Up to Vitosha Mountain");
+        sofiaRide.setVideoUrl("1savMPQRWvg");
 
-        Byte[] byteArray = new Byte[stringBuilder.toString().getBytes().length];
-        int i = 0;
-        for (Byte wrappedByte : stringBuilder.toString().getBytes()) {
-            byteArray[i++] = wrappedByte;
-        }
+        try {
+            final int length = (int) gpsDataTestRide.contentLength();
+            final Byte[] bytes = new Byte[(int) gpsDataTestRide.contentLength()];
+            final InputStream inputStream = gpsDataTestRide.getInputStream();
 
-        final MadRoute madRoute = new MadRoute();
-        //madRoute.setId(253l);
-        madRoute.setDescription("DUMMY MAD ROUTE");
-        madRoute.setLocation("Testland");
-        madRoute.setName("DUMMY");
-        madRoute.setGpsData(byteArray);
-        madRouteRepository.save(madRoute);
+            int byteIndex = 0;
+            int byteRead;
+            while ((byteRead = inputStream.read()) != -1) {
+                bytes[byteIndex++] = (byte) byteRead;
+            }
+            sofiaRide.setGpsData(bytes);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        madRouteRepository.save(sofiaRide);
     }
 }

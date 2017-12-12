@@ -38,9 +38,7 @@ public class MadRouteServiceImplTest {
         // then
         assertNotNull("The returned list shall not be null", madRouteCommandList);
         assertEquals(1, madRouteCommandList.size());
-        assertNotNull(madRouteCommandList.get(0).getGpsData());
-        assertEquals(3, madRouteCommandList.get(0).getGpsData().size());
-        assertEquals(new Double(12.17), madRouteCommandList.get(0).getGpsData().get(0).getVelocity());
+        assertEquals("DUMMY", madRouteCommandList.get(0).getName());
     }
 }
 

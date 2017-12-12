@@ -5,7 +5,9 @@ import com.maddob.madroute.services.MadRouteService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 public class MadRouteRestController {
@@ -16,8 +18,8 @@ public class MadRouteRestController {
         this.madRouteService = madRouteService;
     }
 
-    @GetMapping("routes")
-    public List<MadRouteCommand> getRoutes() {
-        return madRouteService.getAllMadRoutes();
+    @GetMapping("api/routes")
+    public Map<String, List<MadRouteCommand>> getRoutes() {
+        return Collections.singletonMap("madRoutes", madRouteService.getAllMadRoutes());
     }
 }

@@ -17,8 +17,12 @@ public class MadRoute {
     private String location;
 
     @Lob
+    private String videoUrl;
+
+    @Lob
     private String description;
 
     @Lob
+    @Basic(fetch = FetchType.LAZY)
     private Byte[] gpsData;
 }

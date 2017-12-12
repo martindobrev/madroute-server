@@ -7,7 +7,13 @@ import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
 @Component
-public class MadRouteToMadRouteCommand implements Converter<MadRoute, MadRouteCommand> {
+public class MadRouteToCommandWithGpsData implements Converter<MadRoute, MadRouteCommand> {
+
+    private NMEAParser nmeaParser;
+
+    public MadRouteToCommandWithGpsData(NMEAParser nmeaParser) {
+        this.nmeaParser = nmeaParser;
+    }
 
     @Override
     public MadRouteCommand convert(MadRoute madRoute) {
@@ -16,6 +22,7 @@ public class MadRouteToMadRouteCommand implements Converter<MadRoute, MadRouteCo
         command.setDescription(madRoute.getDescription());
         command.setLocation(madRoute.getLocation());
         command.setName(madRoute.getName());
+        command.setGpsData(this.nmeaParser.parse(madRoute.getGpsData()));
         return command;
     }
 }
