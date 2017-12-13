@@ -6,4 +6,5 @@ import java.util.List;
 
 public interface MadRouteService {
     List<MadRouteCommand> getAllMadRoutes();
+    MadRouteCommand getRoute(Long id);
 }

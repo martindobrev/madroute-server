@@ -1,6 +1,7 @@
 package com.maddob.madroute.services;
 
 import com.maddob.madroute.command.MadRouteCommand;
+import com.maddob.madroute.converters.MadRouteToCommandWithGpsData;
 import com.maddob.madroute.converters.MadRouteToMadRouteCommand;
 import com.maddob.madroute.domain.MadRoute;
 import com.maddob.madroute.repositories.MadRouteRepository;
@@ -14,10 +15,14 @@ public class MadRouteServiceImpl implements MadRouteService {
 
     private MadRouteRepository madRouteRepository;
     private MadRouteToMadRouteCommand madRouteToMadRouteCommandConverter;
+    private MadRouteToCommandWithGpsData madRouteToMadRouteCommandWithGpsData;
 
-    public MadRouteServiceImpl(MadRouteRepository madRouteRepository, MadRouteToMadRouteCommand madRouteToMadRouteCommandConverter) {
+    public MadRouteServiceImpl(MadRouteRepository madRouteRepository,
+                               MadRouteToMadRouteCommand madRouteToMadRouteCommandConverter,
+                               MadRouteToCommandWithGpsData madRouteToMadRouteCommandWithGpsData) {
         this.madRouteRepository = madRouteRepository;
         this.madRouteToMadRouteCommandConverter = madRouteToMadRouteCommandConverter;
+        this.madRouteToMadRouteCommandWithGpsData = madRouteToMadRouteCommandWithGpsData;
     }
 
     @Override
@@ -30,5 +35,10 @@ public class MadRouteServiceImpl implements MadRouteService {
             }
         });
         return madRouteCommands;
+    }
+
+    @Override
+    public MadRouteCommand getRoute(Long id) {
+        return madRouteToMadRouteCommandWithGpsData.convert(madRouteRepository.findOne(id));
     }
 }
