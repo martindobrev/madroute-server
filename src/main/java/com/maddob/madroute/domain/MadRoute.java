@@ -17,7 +17,7 @@ public class MadRoute {
     private String location;
 
     @Lob
-    private String videoUrl;
+    private String videoId;
 
     @Lob
     private String description;

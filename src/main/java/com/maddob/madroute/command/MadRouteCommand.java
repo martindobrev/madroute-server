@@ -15,5 +15,6 @@ public class MadRouteCommand {
     private String name;
     private String location;
     private String description;
+    private String videoId;
     private List<GpsPosition> gpsData;
 }

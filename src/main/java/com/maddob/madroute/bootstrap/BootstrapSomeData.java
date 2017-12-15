@@ -2,7 +2,6 @@ package com.maddob.madroute.bootstrap;
 
 import com.maddob.madroute.domain.MadRoute;
 import com.maddob.madroute.repositories.MadRouteRepository;
-import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
@@ -10,7 +9,6 @@ import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -33,7 +31,7 @@ public class BootstrapSomeData implements ApplicationListener<ContextRefreshedEv
         sofiaRide.setDescription("First test ride in Sofia");
         sofiaRide.setLocation("Sofia, Bulgaria");
         sofiaRide.setName("Up to Vitosha Mountain");
-        sofiaRide.setVideoUrl("1savMPQRWvg");
+        sofiaRide.setVideoId("1savMPQRWvg");
 
         try {
             final int length = (int) gpsDataTestRide.contentLength();

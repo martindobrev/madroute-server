@@ -16,6 +16,7 @@ public class MadRouteToMadRouteCommand implements Converter<MadRoute, MadRouteCo
         command.setDescription(madRoute.getDescription());
         command.setLocation(madRoute.getLocation());
         command.setName(madRoute.getName());
+        command.setVideoId(madRoute.getVideoId());
         return command;
     }
 }
