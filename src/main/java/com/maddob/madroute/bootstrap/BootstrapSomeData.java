@@ -2,6 +2,7 @@ package com.maddob.madroute.bootstrap;
 
 import com.maddob.madroute.domain.MadRoute;
 import com.maddob.madroute.repositories.MadRouteRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
@@ -12,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.IOException;
 import java.io.InputStream;
 
+@Slf4j
 @Component
 public class BootstrapSomeData implements ApplicationListener<ContextRefreshedEvent> {
 
@@ -36,7 +38,12 @@ public class BootstrapSomeData implements ApplicationListener<ContextRefreshedEv
         sofiaRide.setName("Up to Vitosha Mountain");
         sofiaRide.setVideoId("1savMPQRWvg");
 
-        sofiaRide.setGpsData(getResourceBytes(gpsDataTestRide));
+        try {
+            sofiaRide.setGpsData(getResourceBytes(gpsDataTestRide));
+        } catch (IOException exception) {
+            log.warn("Cannot set gps data of test ride 1");
+        }
+
         madRouteRepository.save(sofiaRide);
 
         final MadRoute ride2work = new MadRoute();
@@ -44,26 +51,27 @@ public class BootstrapSomeData implements ApplicationListener<ContextRefreshedEv
         ride2work.setLocation("Sofia, Bulgaria");
         ride2work.setName("Ride to work");
         ride2work.setVideoId("iAqC3FNJboo");
-        ride2work.setGpsData(getResourceBytes(gpsDataRide2Work));
+        try {
+            ride2work.setGpsData(getResourceBytes(gpsDataRide2Work));
+        } catch (IOException exception) {
+            log.warn("Cannot set gps data of test ride 2");
+        }
         madRouteRepository.save(ride2work);
 
     }
 
-    private Byte[] getResourceBytes(final Resource resource) {
-        try {
-            final int length = (int) resource.contentLength();
-            final Byte[] bytes = new Byte[(int) resource.contentLength()];
-            final InputStream inputStream = resource.getInputStream();
-
-            int byteIndex = 0;
-            int byteRead;
-            while ((byteRead = inputStream.read()) != -1) {
-                bytes[byteIndex++] = (byte) byteRead;
-            }
-            return bytes;
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
+    private Byte[] getResourceBytes(final Resource resource) throws IOException {
+        final Byte[] bytes = new Byte[(int) resource.contentLength()];
+        final InputStream inputStream = resource.getInputStream();
+        int byteIndex = 0;
+        int byteRead;
+        while ((byteRead = inputStream.read()) != -1) {
+            bytes[byteIndex++] = (byte) byteRead;
         }
+
+        if (inputStream != null) {
+            inputStream.close();
+        }
+        return bytes;
     }
 }

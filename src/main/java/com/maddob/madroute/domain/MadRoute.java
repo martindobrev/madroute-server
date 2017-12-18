@@ -4,6 +4,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import javax.persistence.*;
+import java.time.Duration;
 
 @Data
 @Entity
@@ -15,6 +16,8 @@ public class MadRoute {
     private Long id;
     private String name;
     private String location;
+    private Double distance;
+    private Duration duration;
 
     @Lob
     private String videoId;

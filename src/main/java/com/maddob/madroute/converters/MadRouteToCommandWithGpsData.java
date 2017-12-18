@@ -23,6 +23,8 @@ public class MadRouteToCommandWithGpsData implements Converter<MadRoute, MadRout
         command.setLocation(madRoute.getLocation());
         command.setName(madRoute.getName());
         command.setGpsData(this.nmeaParser.parse(madRoute.getGpsData()));
+        command.setDistance(madRoute.getDistance());
+        command.setDuration(madRoute.getDuration());
         command.setVideoId(madRoute.getVideoId());
         return command;
     }

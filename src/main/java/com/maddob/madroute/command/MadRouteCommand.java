@@ -5,6 +5,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.Duration;
 import java.util.List;
 
 @Getter
@@ -16,5 +17,7 @@ public class MadRouteCommand {
     private String location;
     private String description;
     private String videoId;
+    private Double distance;
+    private Duration duration;
     private List<GpsPosition> gpsData;
 }
