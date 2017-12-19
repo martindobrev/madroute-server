@@ -13,6 +13,9 @@ public class GeoUtils {
      *
      * lat1, lon1 Start point lat2, lon2 End point el1 Start altitude in meters
      * el2 End altitude in meters
+     *
+     * Code taken from Stack Overflow
+     *
      * @returns Distance in Meters
      */
     public static double distance(double lat1, double lat2, double lon1,
@@ -34,10 +37,11 @@ public class GeoUtils {
     }
 
     public static double distance(GpsPosition gpsPosition1, GpsPosition gpsPosition2) {
+        // TODO: Adjust the altitude diffs
         return distance(
                 gpsPosition1.getLatitude(), gpsPosition2.getLatitude(),
-                gpsPosition1.getLatitude(), gpsPosition2.getLongitude(),
-                gpsPosition1.getAltitude(), gpsPosition2.getAltitude()
+                gpsPosition1.getLongitude(), gpsPosition2.getLongitude(),
+                0, 0
         );
     }
 }

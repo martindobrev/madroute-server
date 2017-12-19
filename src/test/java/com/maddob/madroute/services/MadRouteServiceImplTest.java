@@ -1,41 +1,25 @@
 package com.maddob.madroute.services;
 
 
+import com.maddob.madroute.api.v1.model.MadRouteDTO;
 import com.maddob.madroute.command.MadRouteCommand;
-import com.maddob.madroute.converters.MadRouteToCommandWithGpsData;
-import com.maddob.madroute.converters.MadRouteToMadRouteCommand;
 import com.maddob.madroute.domain.MadRoute;
-import com.maddob.madroute.repositories.MadRouteRepository;
-import javassist.bytecode.ByteArray;
 import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.core.io.Resource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
-import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Matchers.any;
+import static org.junit.Assert.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -54,12 +38,11 @@ public class MadRouteServiceImplTest {
         // given data already in the repositories
 
         // when
-        List<MadRouteCommand> madRouteCommandList = madRouteService.getAllMadRoutes();
+        List<MadRouteDTO> madRouteDTOList = madRouteService.getMadRoutes();
 
         // then
-        assertNotNull("The returned list shall not be null", madRouteCommandList);
-        assertEquals(2, madRouteCommandList.size());
-        // assertEquals("", madRouteCommandList.get(0).getName());
+        assertNotNull("The returned list shall not be null", madRouteDTOList);
+        assertEquals(2, madRouteDTOList.size());
     }
 
     @Test
@@ -69,20 +52,34 @@ public class MadRouteServiceImplTest {
         final MadRoute routeToBeSaved = getTestRoute();
 
         // when
-        madRouteService.save(routeToBeSaved);
+        MadRoute savedMadRoute = madRouteService.save(routeToBeSaved);
 
         // then
-        MadRouteCommand command = madRouteService.getRoute(3l);
+        MadRouteDTO command = madRouteService.getMadRoute(savedMadRoute.getId());
         assertNotNull(command);
         assertNotNull(command.getDistance());
         assertThat(command.getDistance(), Matchers.closeTo(50, 10));
+    }
 
+    @Test
+    @Transactional
+    public void testSaveMadRouteCalculatesAndStoresDurationInformation() {
+        // given
+        final MadRoute routeToBeSaved = getTestRoute();
+
+        // when
+        MadRoute savedMadRoute = madRouteService.save(routeToBeSaved);
+
+        // then
+        MadRouteDTO command = madRouteService.getMadRoute(savedMadRoute.getId());
+        assertNotNull(command);
+        assertNotNull(command.getDuration());
+        assertThat(new Double(command.getDuration().toMillis()), Matchers.closeTo(9000, 100));
     }
 
     private MadRoute getTestRoute() {
         //List<MadRoute> madRouteList = new ArrayList<>();
         MadRoute testRouteBerlin = new MadRoute();
-        testRouteBerlin.setId(3l);
         testRouteBerlin.setVideoId("INVALID_VIDEO_ID");
         testRouteBerlin.setName("Test Route Berlin");
         testRouteBerlin.setDescription("This is a test route for the service implementation");

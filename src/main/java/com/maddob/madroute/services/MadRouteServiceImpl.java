@@ -1,8 +1,8 @@
 package com.maddob.madroute.services;
 
-import com.maddob.madroute.command.MadRouteCommand;
-import com.maddob.madroute.converters.MadRouteToCommandWithGpsData;
-import com.maddob.madroute.converters.MadRouteToMadRouteCommand;
+import com.maddob.madroute.api.v1.mapper.GpsPositionMapper;
+import com.maddob.madroute.api.v1.mapper.MadRouteMapper;
+import com.maddob.madroute.api.v1.model.MadRouteDTO;
 import com.maddob.madroute.domain.GpsPosition;
 import com.maddob.madroute.domain.MadRoute;
 import com.maddob.madroute.parsers.NMEAParser;
@@ -10,48 +10,30 @@ import com.maddob.madroute.repositories.MadRouteRepository;
 import com.maddob.madroute.util.GeoUtils;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class MadRouteServiceImpl implements MadRouteService {
 
-    private MadRouteRepository madRouteRepository;
-    private MadRouteToMadRouteCommand madRouteToMadRouteCommandConverter;
-    private MadRouteToCommandWithGpsData madRouteToMadRouteCommandWithGpsData;
-    private NMEAParser nmeaParser;
+    private final MadRouteRepository madRouteRepository;
+    private final NMEAParser nmeaParser;
+    private final MadRouteMapper madRouteMapper;
+    private final GpsPositionMapper gpsPositionMapper;
 
-    public MadRouteServiceImpl(MadRouteRepository madRouteRepository,
-                               MadRouteToMadRouteCommand madRouteToMadRouteCommandConverter,
-                               MadRouteToCommandWithGpsData madRouteToMadRouteCommandWithGpsData,
-                               NMEAParser nmeaParser) {
+    public MadRouteServiceImpl(MadRouteRepository madRouteRepository, NMEAParser nmeaParser, MadRouteMapper madRouteMapper, GpsPositionMapper gpsPositionMapper) {
         this.madRouteRepository = madRouteRepository;
-        this.madRouteToMadRouteCommandConverter = madRouteToMadRouteCommandConverter;
-        this.madRouteToMadRouteCommandWithGpsData = madRouteToMadRouteCommandWithGpsData;
         this.nmeaParser = nmeaParser;
+        this.madRouteMapper = madRouteMapper;
+        this.gpsPositionMapper = gpsPositionMapper;
     }
 
     @Override
-    public List<MadRouteCommand> getAllMadRoutes() {
-        List<MadRouteCommand> madRouteCommands = new ArrayList<>();
-        this.madRouteRepository.findAll().forEach( madRoute -> {
-            MadRouteCommand madRouteCommand = madRouteToMadRouteCommandConverter.convert(madRoute);
-            if (madRouteCommand != null) {
-                madRouteCommands.add(madRouteCommand);
-            }
-        });
-        return madRouteCommands;
-    }
-
-    @Override
-    public MadRouteCommand getRoute(Long id) {
-        return madRouteToMadRouteCommandWithGpsData.convert(madRouteRepository.findOne(id));
-    }
-
-    @Override
-    public void save(final MadRoute routeToBeSaved) {
+    public MadRoute save(final MadRoute routeToBeSaved) {
         if (routeToBeSaved.getGpsData() != null) {
-            List<GpsPosition> gpsPositionList = nmeaParser.parse(routeToBeSaved.getGpsData());
+            final List<GpsPosition> gpsPositionList = nmeaParser.parse(routeToBeSaved.getGpsData());
 
             double distance = 0;
             if (gpsPositionList.size() > 1) {
@@ -59,12 +41,35 @@ public class MadRouteServiceImpl implements MadRouteService {
                     distance += GeoUtils.distance(gpsPositionList.get(i - 1), gpsPositionList.get(i));
                 }
             }
+
+            final GpsPosition startPosition = gpsPositionList.get(0);
+            final GpsPosition finalPosition = gpsPositionList.get(gpsPositionList.size() - 1);
+            if (startPosition != null && finalPosition != null) {
+                final LocalDateTime start = LocalDateTime.of(startPosition.getDate(), startPosition.getTime());
+                final LocalDateTime end = LocalDateTime.of(finalPosition.getDate(), finalPosition.getTime());
+                routeToBeSaved.setDuration(Duration.between(start, end));
+            }
             routeToBeSaved.setDistance(distance);
 
         }
 
-        madRouteRepository.save(routeToBeSaved);
+        return madRouteRepository.save(routeToBeSaved);
     }
 
+    @Override
+    public List<MadRouteDTO> getMadRoutes() {
+        final List<MadRouteDTO> madRouteDTOs = new ArrayList<>();
+        this.madRouteRepository.findAll().forEach( madRoute -> {
+            MadRouteDTO madRouteDTO = madRouteMapper.modelToDto(madRoute, false);
+            if (madRouteDTO != null) {
+                madRouteDTOs.add(madRouteDTO);
+            }
+        });
+        return madRouteDTOs;
+    }
 
+    @Override
+    public MadRouteDTO getMadRoute(Long id) {
+        return madRouteMapper.modelToDto(this.madRouteRepository.findOne(id), true);
+    }
 }

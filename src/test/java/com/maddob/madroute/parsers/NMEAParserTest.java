@@ -104,4 +104,28 @@ public class NMEAParserTest {
         assertEquals(LocalTime.of(13, 34, 46), gpsPosition.getTime());
         assertEquals(LocalDate.of(2017, 11, 5), gpsPosition.getDate());
     }
+
+    @Test
+    public void testParserWithGeneratedNMEAFromNmeagenDotOrg() {
+        // given a valid single GPRMC NMEA record generated from nmeagen.org
+        byte[] bytes = "$GPRMC,184559.342,A,5230.180,N,01324.996,E,009.7,041.3,181217,000.0,W*70".getBytes();
+        Byte[] wrappedBytes = new Byte[bytes.length];
+        for (int i = 0; i < bytes.length; i++) {
+            wrappedBytes[i] = bytes[i];
+        }
+
+        // when
+        List<GpsPosition> gpsPositionList = parser.parse(wrappedBytes);
+
+        // then
+        assertFalse("The list shall not be empty", gpsPositionList.isEmpty());
+        assertEquals("The list shall contain only 1 GpsPosition object", 1, gpsPositionList.size());
+        GpsPosition gpsPosition = gpsPositionList.get(0);
+        assertNotNull("The GpsPosition object shall not be null", gpsPosition);
+        //assertTrue(0.0001 > gpsPosition.getLatitude() - 42.623925);
+        //assertTrue(0.0001 > gpsPosition.getLongitude() - 23.367762);
+        assertEquals(gpsPosition.getVelocity(), new Double(9.7));
+        assertEquals(LocalTime.of(18, 45, 59), gpsPosition.getTime());
+        assertEquals(LocalDate.of(2017, 12, 18), gpsPosition.getDate());
+    }
 }

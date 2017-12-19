@@ -61,7 +61,7 @@ public class NMEAParser {
     private GpsPosition parseNMEALine(final String line) {
         if (line.startsWith(GPRMC)) {
             String[] parts = line.split(",");
-            if (parts.length != 13) {
+            if (parts.length < 12) {
                 return null;
             }
 

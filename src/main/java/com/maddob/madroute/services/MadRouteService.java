@@ -1,12 +1,14 @@
 package com.maddob.madroute.services;
 
-import com.maddob.madroute.command.MadRouteCommand;
+import com.maddob.madroute.api.v1.model.MadRouteDTO;
 import com.maddob.madroute.domain.MadRoute;
 
 import java.util.List;
 
 public interface MadRouteService {
-    List<MadRouteCommand> getAllMadRoutes();
-    MadRouteCommand getRoute(Long id);
-    void save(MadRoute routeToBeSaved);
+    MadRoute save(MadRoute routeToBeSaved);
+
+    List<MadRouteDTO> getMadRoutes();
+    MadRouteDTO getMadRoute(Long id);
+
 }
