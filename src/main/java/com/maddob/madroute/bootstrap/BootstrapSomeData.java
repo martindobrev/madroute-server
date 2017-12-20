@@ -2,7 +2,9 @@ package com.maddob.madroute.bootstrap;
 
 import com.maddob.madroute.domain.MadRoute;
 import com.maddob.madroute.repositories.MadRouteRepository;
+import com.maddob.madroute.services.MadRouteService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
@@ -23,10 +25,11 @@ public class BootstrapSomeData implements ApplicationListener<ContextRefreshedEv
     @Value(value = "classpath:bootstrap/17111003.LOG")
     private Resource gpsDataRide2Work;
 
-    private final MadRouteRepository madRouteRepository;
+    @Autowired
+    private final MadRouteService madRouteService;
 
-    public BootstrapSomeData(MadRouteRepository madRouteRepository) {
-        this.madRouteRepository = madRouteRepository;
+    public BootstrapSomeData(MadRouteService madRouteService) {
+        this.madRouteService = madRouteService;
     }
 
     @Override
@@ -43,8 +46,7 @@ public class BootstrapSomeData implements ApplicationListener<ContextRefreshedEv
         } catch (IOException exception) {
             log.warn("Cannot set gps data of test ride 1");
         }
-
-        madRouteRepository.save(sofiaRide);
+        madRouteService.save(sofiaRide);
 
         final MadRoute ride2work = new MadRoute();
         ride2work.setDescription("Just a rest ride to work on my first fixie");
@@ -56,7 +58,7 @@ public class BootstrapSomeData implements ApplicationListener<ContextRefreshedEv
         } catch (IOException exception) {
             log.warn("Cannot set gps data of test ride 2");
         }
-        madRouteRepository.save(ride2work);
+        madRouteService.save(ride2work);
 
     }
 
@@ -68,10 +70,8 @@ public class BootstrapSomeData implements ApplicationListener<ContextRefreshedEv
         while ((byteRead = inputStream.read()) != -1) {
             bytes[byteIndex++] = (byte) byteRead;
         }
+        inputStream.close();
 
-        if (inputStream != null) {
-            inputStream.close();
-        }
         return bytes;
     }
 }

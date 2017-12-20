@@ -9,7 +9,6 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,13 +20,13 @@ public class MadRouteMapperTest {
 
     private MadRouteMapper madRouteMapper;
 
-    private final Long id = 12382173l;
+    private final Long id = 12382173L;
     private final String name = "TEST ROUTE";
     private final String location = "TESTORDIA";
     private final String description = "THIS IS JUST A TEST DESCRIPTION";
     private final String videoId = "oz7632nknf98jf";
     private final Double distance = 1235.45;
-    private final Duration duration = Duration.ofSeconds(100);
+    private final Long duration = 100L;
 
     @Mock
     private GpsPositionMapper gpsPositionMapperMock;

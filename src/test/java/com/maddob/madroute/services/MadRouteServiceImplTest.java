@@ -2,7 +2,6 @@ package com.maddob.madroute.services;
 
 
 import com.maddob.madroute.api.v1.model.MadRouteDTO;
-import com.maddob.madroute.command.MadRouteCommand;
 import com.maddob.madroute.domain.MadRoute;
 import org.hamcrest.Matchers;
 import org.junit.Before;
@@ -24,6 +23,8 @@ import static org.junit.Assert.*;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class MadRouteServiceImplTest {
+
+    private static final String NMEA_POINTS_10_DISTANCE_5_NMEA = "nmea/points_10_distance_5.nmea";
 
     @Autowired
     MadRouteService madRouteService;
@@ -71,10 +72,10 @@ public class MadRouteServiceImplTest {
         MadRoute savedMadRoute = madRouteService.save(routeToBeSaved);
 
         // then
-        MadRouteDTO command = madRouteService.getMadRoute(savedMadRoute.getId());
-        assertNotNull(command);
-        assertNotNull(command.getDuration());
-        assertThat(new Double(command.getDuration().toMillis()), Matchers.closeTo(9000, 100));
+        MadRouteDTO madRouteDTO = madRouteService.getMadRoute(savedMadRoute.getId());
+        assertNotNull(madRouteDTO);
+        assertNotNull(madRouteDTO.getDuration());
+        assertThat(madRouteDTO.getDuration(), Matchers.equalTo(9L));
     }
 
     private MadRoute getTestRoute() {
@@ -86,13 +87,10 @@ public class MadRouteServiceImplTest {
         testRouteBerlin.setLocation("Berlin, Germany");
 
         try {
-            testRouteBerlin.setGpsData(getResourceBytes("nmea/points_10_distance_5.nmea"));
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (URISyntaxException e) {
+            testRouteBerlin.setGpsData(getResourceBytes(NMEA_POINTS_10_DISTANCE_5_NMEA));
+        } catch (IOException | URISyntaxException e) {
             e.printStackTrace();
         }
-        //madRouteList.add(testRouteBerlin);
         return testRouteBerlin;
     }
 
@@ -105,10 +103,7 @@ public class MadRouteServiceImplTest {
         while ((byteRead = inputStream.read()) != -1) {
             bytes[byteIndex++] = (byte) byteRead;
         }
-
-        if (inputStream != null) {
-            inputStream.close();
-        }
+        inputStream.close();
         return bytes;
     }
 }

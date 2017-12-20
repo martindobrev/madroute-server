@@ -68,10 +68,10 @@ public class MadRouteRestControllerTest {
 
     private MadRouteDTO createMadRouteDTO() {
         final MadRouteDTO dto = new MadRouteDTO();
-        dto.setId(12l);
+        dto.setId(12L);
         dto.setName("DUMMY");
         dto.setLocation("New Berlin");
-        dto.setDuration(Duration.ofSeconds(100));
+        dto.setDuration(100L);
         dto.setVideoId("fhdlsju34kjhfsd");
         dto.setDistance(125.70);
         dto.setDescription("This is just a test");

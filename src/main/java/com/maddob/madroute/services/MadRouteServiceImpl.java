@@ -47,7 +47,7 @@ public class MadRouteServiceImpl implements MadRouteService {
             if (startPosition != null && finalPosition != null) {
                 final LocalDateTime start = LocalDateTime.of(startPosition.getDate(), startPosition.getTime());
                 final LocalDateTime end = LocalDateTime.of(finalPosition.getDate(), finalPosition.getTime());
-                routeToBeSaved.setDuration(Duration.between(start, end));
+                routeToBeSaved.setDuration(Duration.between(start, end).getSeconds());
             }
             routeToBeSaved.setDistance(distance);
 

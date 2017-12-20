@@ -19,5 +19,5 @@ public class MadRouteDTO {
     private String videoId;
     private List<GpsPositionDTO> gpsData;
     private Double distance;
-    private Duration duration;
+    private Long duration;
 }
