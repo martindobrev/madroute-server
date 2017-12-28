@@ -1,16 +1,14 @@
 package com.maddob.madroute.api.v1.model;
 
-import com.maddob.madroute.domain.GpsPosition;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.Duration;
 import java.util.List;
 
 @Getter
 @Setter
-@EqualsAndHashCode(exclude = "gpsData")
+@EqualsAndHashCode(exclude = {"gpsData", "base64GpsData"})
 public class MadRouteDTO {
     private Long id;
     private String name;
@@ -20,4 +18,5 @@ public class MadRouteDTO {
     private List<GpsPositionDTO> gpsData;
     private Double distance;
     private Long duration;
+    private String base64GpsData;
 }

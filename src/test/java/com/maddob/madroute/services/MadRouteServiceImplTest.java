@@ -3,6 +3,7 @@ package com.maddob.madroute.services;
 
 import com.maddob.madroute.api.v1.model.MadRouteDTO;
 import com.maddob.madroute.domain.MadRoute;
+import com.maddob.madroute.util.DataUtils;
 import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
@@ -14,7 +15,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.util.List;
 
@@ -28,6 +28,9 @@ public class MadRouteServiceImplTest {
 
     @Autowired
     MadRouteService madRouteService;
+
+    @Autowired
+    DataUtils dataUtils;
 
     @Before
     public void setUp() {
@@ -64,6 +67,30 @@ public class MadRouteServiceImplTest {
 
     @Test
     @Transactional
+    public void testSaveMadRouteDto() throws Exception {
+        // given
+        final MadRouteDTO madRouteDto = new MadRouteDTO();
+        madRouteDto.setName("BASE64 GPS DATA");
+        madRouteDto.setDescription("Just a simple test");
+        madRouteDto.setLocation("DUMMYLAND");
+        madRouteDto.setVideoId("someNotExistingID");
+        madRouteDto.setBase64GpsData(dataUtils.byteArrayAsBase64String(dataUtils.getResourceBytes(NMEA_POINTS_10_DISTANCE_5_NMEA)));
+
+        // when
+        MadRouteDTO savedMadRouteDto = madRouteService.saveDto(madRouteDto);
+
+        // then
+        assertNotNull(savedMadRouteDto.getId());
+        MadRouteDTO dtoExtractedFromDb = madRouteService.getMadRoute(savedMadRouteDto.getId());
+        assertNotNull(dtoExtractedFromDb);
+        assertNotNull(dtoExtractedFromDb.getDistance());
+        assertNotNull(dtoExtractedFromDb.getDuration());
+        assertNotNull(dtoExtractedFromDb.getGpsData());
+        assertEquals(10, dtoExtractedFromDb.getGpsData().size());
+    }
+
+    @Test
+    @Transactional
     public void testSaveMadRouteCalculatesAndStoresDurationInformation() {
         // given
         final MadRoute routeToBeSaved = getTestRoute();
@@ -87,24 +114,11 @@ public class MadRouteServiceImplTest {
         testRouteBerlin.setLocation("Berlin, Germany");
 
         try {
-            testRouteBerlin.setGpsData(getResourceBytes(NMEA_POINTS_10_DISTANCE_5_NMEA));
+            testRouteBerlin.setGpsData(dataUtils.getResourceBytes(NMEA_POINTS_10_DISTANCE_5_NMEA));
         } catch (IOException | URISyntaxException e) {
             e.printStackTrace();
         }
         return testRouteBerlin;
-    }
-
-    private Byte[] getResourceBytes(final String filePath) throws IOException, URISyntaxException {
-        final InputStream inputStream = this.getClass().getClassLoader()
-                .getResourceAsStream(filePath);
-        final Byte[] bytes = new Byte[inputStream.available()];
-        int byteIndex = 0;
-        int byteRead;
-        while ((byteRead = inputStream.read()) != -1) {
-            bytes[byteIndex++] = (byte) byteRead;
-        }
-        inputStream.close();
-        return bytes;
     }
 }
 

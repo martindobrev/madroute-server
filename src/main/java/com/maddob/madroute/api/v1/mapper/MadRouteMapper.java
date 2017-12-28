@@ -1,10 +1,10 @@
 package com.maddob.madroute.api.v1.mapper;
 
-import com.maddob.madroute.api.v1.model.GpsPositionDTO;
 import com.maddob.madroute.api.v1.model.MadRouteDTO;
 import com.maddob.madroute.domain.GpsPosition;
 import com.maddob.madroute.domain.MadRoute;
 import com.maddob.madroute.parsers.NMEAParser;
+import com.maddob.madroute.util.DataUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -20,9 +20,14 @@ public class MadRouteMapper {
     @Autowired
     private final NMEAParser nmeaParser;
 
-    public MadRouteMapper(GpsPositionMapper gpsPositionMapper, NMEAParser nmeaParser) {
+    @Autowired
+    private final DataUtils dataUtils;
+
+
+    public MadRouteMapper(GpsPositionMapper gpsPositionMapper, NMEAParser nmeaParser, DataUtils dataUtils) {
         this.gpsPositionMapper = gpsPositionMapper;
         this.nmeaParser = nmeaParser;
+        this.dataUtils = dataUtils;
     }
 
     public MadRouteDTO modelToDto(final MadRoute madRouteModel, final boolean includeGpsData) {
@@ -50,6 +55,11 @@ public class MadRouteMapper {
         madRoute.setDuration(madRouteDTO.getDuration());
         madRoute.setVideoId(madRouteDTO.getVideoId());
         madRoute.setDescription(madRouteDTO.getDescription());
+
+        if (madRouteDTO.getBase64GpsData() != null) {
+            madRoute.setGpsData(dataUtils.base64StringToByteArray(madRouteDTO.getBase64GpsData()));
+        }
+
         return madRoute;
     }
 

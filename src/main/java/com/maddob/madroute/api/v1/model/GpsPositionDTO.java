@@ -3,7 +3,6 @@ package com.maddob.madroute.api.v1.model;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
 

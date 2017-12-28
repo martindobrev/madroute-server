@@ -1,5 +1,6 @@
 package com.maddob.madroute.controllers.v1;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.maddob.madroute.api.v1.model.MadRouteDTO;
 import com.maddob.madroute.services.MadRouteService;
 import org.junit.Before;
@@ -12,7 +13,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,6 +22,7 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Matchers.any;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -36,6 +37,8 @@ public class MadRouteRestControllerTest {
     @Autowired
     MockMvc mockMvc;
 
+    private ObjectMapper objectMapper = new ObjectMapper();
+
 
     @Before
     public void setUp() {
@@ -46,6 +49,7 @@ public class MadRouteRestControllerTest {
 
         given(madRouteServiceMock.getMadRoutes()).willReturn(madRouteDTOList);
         given(madRouteServiceMock.getMadRoute(any())).willReturn(madRouteOneDTO);
+        given(madRouteServiceMock.saveDto(any())).willReturn(madRouteOneDTO);
     }
 
 
@@ -62,6 +66,14 @@ public class MadRouteRestControllerTest {
         mockMvc.perform(get("/api/v1/route/12").contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name", equalTo(createMadRouteDTO().getName())));
+    }
+
+    @Test
+    public void testCreateNewRoute()  throws Exception {
+        String jsonMadRouteDTO = objectMapper.writeValueAsString(createMadRouteDTO());
+        mockMvc.perform(post("/api/v1/routes").contentType(MediaType.APPLICATION_JSON).content(jsonMadRouteDTO))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.id", equalTo(createMadRouteDTO().getId())));
     }
 
 

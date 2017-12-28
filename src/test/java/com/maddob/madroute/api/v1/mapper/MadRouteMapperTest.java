@@ -4,6 +4,7 @@ import com.maddob.madroute.api.v1.model.MadRouteDTO;
 import com.maddob.madroute.domain.GpsPosition;
 import com.maddob.madroute.domain.MadRoute;
 import com.maddob.madroute.parsers.NMEAParser;
+import com.maddob.madroute.util.DataUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -19,6 +20,7 @@ import static org.mockito.BDDMockito.given;
 public class MadRouteMapperTest {
 
     private MadRouteMapper madRouteMapper;
+    private DataUtils dataUtils = new DataUtils();
 
     private final Long id = 12382173L;
     private final String name = "TEST ROUTE";
@@ -37,7 +39,7 @@ public class MadRouteMapperTest {
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        madRouteMapper = new MadRouteMapper(gpsPositionMapperMock, nmeaParserMock);
+        madRouteMapper = new MadRouteMapper(gpsPositionMapperMock, nmeaParserMock, dataUtils);
     }
 
     @Test
@@ -96,6 +98,21 @@ public class MadRouteMapperTest {
         assertEquals(videoId, madRoute.getVideoId());
         assertEquals(distance, madRoute.getDistance());
         assertEquals(duration, madRoute.getDuration());
+    }
+
+    @Test
+    public void testDtoToModelWithBase64GpsData() throws Exception {
+        // given
+        MadRouteDTO madRouteDTO = createMadRouteDTO();
+        madRouteDTO.setBase64GpsData(dataUtils.byteArrayAsBase64String(dataUtils.getResourceBytes("nmea/points_10_distance_5.nmea")));
+
+        // when
+        MadRoute madRoute = madRouteMapper.dtoToModel(madRouteDTO);
+
+        // then
+        assertNotNull(madRoute);
+        assertNotNull(madRoute.getGpsData());
+        assertEquals(dataUtils.getResourceBytes("nmea/points_10_distance_5.nmea").length, madRoute.getGpsData().length);
     }
 
 

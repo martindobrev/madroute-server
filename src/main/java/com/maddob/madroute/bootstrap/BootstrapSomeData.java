@@ -3,6 +3,7 @@ package com.maddob.madroute.bootstrap;
 import com.maddob.madroute.domain.MadRoute;
 import com.maddob.madroute.repositories.MadRouteRepository;
 import com.maddob.madroute.services.MadRouteService;
+import com.maddob.madroute.util.DataUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,7 +14,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
-import java.io.InputStream;
 
 @Slf4j
 @Component
@@ -28,8 +28,12 @@ public class BootstrapSomeData implements ApplicationListener<ContextRefreshedEv
     @Autowired
     private final MadRouteService madRouteService;
 
-    public BootstrapSomeData(MadRouteService madRouteService) {
+    @Autowired
+    private final DataUtils dataUtils;
+
+    public BootstrapSomeData(MadRouteService madRouteService, DataUtils dataUtils) {
         this.madRouteService = madRouteService;
+        this.dataUtils = dataUtils;
     }
 
     @Override
@@ -42,7 +46,7 @@ public class BootstrapSomeData implements ApplicationListener<ContextRefreshedEv
         sofiaRide.setVideoId("1savMPQRWvg");
 
         try {
-            sofiaRide.setGpsData(getResourceBytes(gpsDataTestRide));
+            sofiaRide.setGpsData(dataUtils.getResourceBytes(gpsDataTestRide));
         } catch (IOException exception) {
             log.warn("Cannot set gps data of test ride 1");
         }
@@ -54,7 +58,7 @@ public class BootstrapSomeData implements ApplicationListener<ContextRefreshedEv
         ride2work.setName("Ride to work");
         ride2work.setVideoId("iAqC3FNJboo");
         try {
-            ride2work.setGpsData(getResourceBytes(gpsDataRide2Work));
+            ride2work.setGpsData(dataUtils.getResourceBytes(gpsDataRide2Work));
         } catch (IOException exception) {
             log.warn("Cannot set gps data of test ride 2");
         }
@@ -62,16 +66,5 @@ public class BootstrapSomeData implements ApplicationListener<ContextRefreshedEv
 
     }
 
-    private Byte[] getResourceBytes(final Resource resource) throws IOException {
-        final Byte[] bytes = new Byte[(int) resource.contentLength()];
-        final InputStream inputStream = resource.getInputStream();
-        int byteIndex = 0;
-        int byteRead;
-        while ((byteRead = inputStream.read()) != -1) {
-            bytes[byteIndex++] = (byte) byteRead;
-        }
-        inputStream.close();
 
-        return bytes;
-    }
 }

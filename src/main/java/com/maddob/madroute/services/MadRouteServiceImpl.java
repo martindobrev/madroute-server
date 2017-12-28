@@ -22,12 +22,16 @@ public class MadRouteServiceImpl implements MadRouteService {
     private final NMEAParser nmeaParser;
     private final MadRouteMapper madRouteMapper;
     private final GpsPositionMapper gpsPositionMapper;
+    private final GeoUtils geoUtils;
 
-    public MadRouteServiceImpl(MadRouteRepository madRouteRepository, NMEAParser nmeaParser, MadRouteMapper madRouteMapper, GpsPositionMapper gpsPositionMapper) {
+    public MadRouteServiceImpl(MadRouteRepository madRouteRepository, NMEAParser nmeaParser,
+                               MadRouteMapper madRouteMapper, GpsPositionMapper gpsPositionMapper,
+                               GeoUtils geoUtils) {
         this.madRouteRepository = madRouteRepository;
         this.nmeaParser = nmeaParser;
         this.madRouteMapper = madRouteMapper;
         this.gpsPositionMapper = gpsPositionMapper;
+        this.geoUtils = geoUtils;
     }
 
     @Override
@@ -38,7 +42,7 @@ public class MadRouteServiceImpl implements MadRouteService {
             double distance = 0;
             if (gpsPositionList.size() > 1) {
                 for (int i = 1; i < gpsPositionList.size(); i++) {
-                    distance += GeoUtils.distance(gpsPositionList.get(i - 1), gpsPositionList.get(i));
+                    distance += geoUtils.distance(gpsPositionList.get(i - 1), gpsPositionList.get(i));
                 }
             }
 
@@ -54,6 +58,11 @@ public class MadRouteServiceImpl implements MadRouteService {
         }
 
         return madRouteRepository.save(routeToBeSaved);
+    }
+
+    @Override
+    public MadRouteDTO saveDto(MadRouteDTO madRouteDTO) {
+        return madRouteMapper.modelToDto(save(madRouteMapper.dtoToModel(madRouteDTO)), true);
     }
 
     @Override

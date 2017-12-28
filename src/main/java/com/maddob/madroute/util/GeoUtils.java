@@ -1,10 +1,12 @@
 package com.maddob.madroute.util;
 
 import com.maddob.madroute.domain.GpsPosition;
+import org.springframework.stereotype.Component;
 
+@Component
 public class GeoUtils {
 
-    public static final int R = 6371;
+    private static final int R = 6371;
 
     /**
      * Calculate distance between two points in latitude and longitude taking
@@ -16,9 +18,9 @@ public class GeoUtils {
      *
      * Code taken from Stack Overflow
      *
-     * @returns Distance in Meters
+     * @return Distance in Meters
      */
-    public static double distance(double lat1, double lat2, double lon1,
+    public double distance(double lat1, double lat2, double lon1,
                                   double lon2, double el1, double el2) {
 
         double latDistance = Math.toRadians(lat2 - lat1);
@@ -36,7 +38,7 @@ public class GeoUtils {
         return Math.sqrt(distance);
     }
 
-    public static double distance(GpsPosition gpsPosition1, GpsPosition gpsPosition2) {
+    public double distance(GpsPosition gpsPosition1, GpsPosition gpsPosition2) {
         // TODO: Adjust the altitude diffs
         return distance(
                 gpsPosition1.getLatitude(), gpsPosition2.getLatitude(),
