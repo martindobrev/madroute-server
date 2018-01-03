@@ -73,7 +73,7 @@ public class MadRouteRestControllerTest {
         String jsonMadRouteDTO = objectMapper.writeValueAsString(createMadRouteDTO());
         mockMvc.perform(post("/api/v1/routes").contentType(MediaType.APPLICATION_JSON).content(jsonMadRouteDTO))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.id", equalTo(createMadRouteDTO().getId())));
+                .andExpect(jsonPath("$.id", equalTo(12)));
     }
 
 

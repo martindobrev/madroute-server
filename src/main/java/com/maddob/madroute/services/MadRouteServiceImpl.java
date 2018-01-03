@@ -44,17 +44,16 @@ public class MadRouteServiceImpl implements MadRouteService {
                 for (int i = 1; i < gpsPositionList.size(); i++) {
                     distance += geoUtils.distance(gpsPositionList.get(i - 1), gpsPositionList.get(i));
                 }
-            }
 
-            final GpsPosition startPosition = gpsPositionList.get(0);
-            final GpsPosition finalPosition = gpsPositionList.get(gpsPositionList.size() - 1);
-            if (startPosition != null && finalPosition != null) {
-                final LocalDateTime start = LocalDateTime.of(startPosition.getDate(), startPosition.getTime());
-                final LocalDateTime end = LocalDateTime.of(finalPosition.getDate(), finalPosition.getTime());
-                routeToBeSaved.setDuration(Duration.between(start, end).getSeconds());
+                final GpsPosition startPosition = gpsPositionList.get(0);
+                final GpsPosition finalPosition = gpsPositionList.get(gpsPositionList.size() - 1);
+                if (startPosition != null && finalPosition != null) {
+                    final LocalDateTime start = LocalDateTime.of(startPosition.getDate(), startPosition.getTime());
+                    final LocalDateTime end = LocalDateTime.of(finalPosition.getDate(), finalPosition.getTime());
+                    routeToBeSaved.setDuration(Duration.between(start, end).getSeconds());
+                }
+                routeToBeSaved.setDistance(distance);
             }
-            routeToBeSaved.setDistance(distance);
-
         }
 
         return madRouteRepository.save(routeToBeSaved);
