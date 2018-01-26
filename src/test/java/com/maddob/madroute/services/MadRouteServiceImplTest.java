@@ -25,6 +25,7 @@ import static org.junit.Assert.*;
 public class MadRouteServiceImplTest {
 
     private static final String NMEA_POINTS_10_DISTANCE_5_NMEA = "nmea/points_10_distance_5.nmea";
+    private static final String GPX_3_POINTS = "gpx/simple_gpx_data.gpx";
 
     @Autowired
     MadRouteService madRouteService;
@@ -46,7 +47,7 @@ public class MadRouteServiceImplTest {
 
         // then
         assertNotNull("The returned list shall not be null", madRouteDTOList);
-        assertEquals(2, madRouteDTOList.size());
+        assertEquals(3, madRouteDTOList.size());
     }
 
     @Test
@@ -87,6 +88,31 @@ public class MadRouteServiceImplTest {
         assertNotNull(dtoExtractedFromDb.getDuration());
         assertNotNull(dtoExtractedFromDb.getGpsData());
         assertEquals(10, dtoExtractedFromDb.getGpsData().size());
+    }
+
+    @Test
+    @Transactional
+    public void testSaveMadRouteDtoWithGPXData() throws Exception {
+        // given
+        final MadRouteDTO madRouteDto = new MadRouteDTO();
+        madRouteDto.setName("BASE64 GPX GPS DATA");
+        madRouteDto.setDescription("Just a simple test");
+        madRouteDto.setLocation("DUMMYLAND");
+        madRouteDto.setVideoId("someNotExistingID");
+        madRouteDto.setBase64GpsData(dataUtils.byteArrayAsBase64String(dataUtils.getResourceBytes(GPX_3_POINTS)));
+
+        // when
+        MadRouteDTO savedMadRouteDto = madRouteService.saveDto(madRouteDto);
+
+        // then
+        assertNotNull(savedMadRouteDto.getId());
+        MadRouteDTO dtoExtractedFromDb = madRouteService.getMadRoute(savedMadRouteDto.getId());
+        assertNotNull(dtoExtractedFromDb);
+        assertNotNull(dtoExtractedFromDb.getDistance());
+        assertNotNull(dtoExtractedFromDb.getDuration());
+        assertNotNull(dtoExtractedFromDb.getGpsData());
+        assertEquals(3, dtoExtractedFromDb.getGpsData().size());
+
     }
 
     @Test

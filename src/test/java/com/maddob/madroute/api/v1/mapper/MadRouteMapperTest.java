@@ -3,6 +3,7 @@ package com.maddob.madroute.api.v1.mapper;
 import com.maddob.madroute.api.v1.model.MadRouteDTO;
 import com.maddob.madroute.domain.GpsPosition;
 import com.maddob.madroute.domain.MadRoute;
+import com.maddob.madroute.parsers.GPXParser;
 import com.maddob.madroute.parsers.NMEAParser;
 import com.maddob.madroute.util.DataUtils;
 import org.junit.Before;
@@ -10,12 +11,14 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Matchers.any;
 
 public class MadRouteMapperTest {
 
@@ -36,10 +39,13 @@ public class MadRouteMapperTest {
     @Mock
     private NMEAParser nmeaParserMock;
 
+    @Mock
+    private GPXParser gpxParserMock;
+
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        madRouteMapper = new MadRouteMapper(gpsPositionMapperMock, nmeaParserMock, dataUtils);
+        madRouteMapper = new MadRouteMapper(gpsPositionMapperMock, nmeaParserMock, gpxParserMock, dataUtils);
     }
 
     @Test
@@ -62,7 +68,7 @@ public class MadRouteMapperTest {
     }
 
     @Test
-    public void testModelToDtoWithGps() {
+    public void testModelToDtoWithGps() throws Exception {
         // given
         final MadRoute madRoute = createMadRoute();
         final Byte[] byteArray = new Byte[10];
@@ -73,6 +79,7 @@ public class MadRouteMapperTest {
         mockGpsPositions.add(new GpsPosition());
 
         given(nmeaParserMock.parse(byteArray)).willReturn(mockGpsPositions);
+        given(gpxParserMock.parse(byteArray)).willThrow(new IOException());
 
         // when
         final MadRouteDTO madRouteDTO = madRouteMapper.modelToDto(madRoute, true);

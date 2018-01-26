@@ -5,11 +5,14 @@ import com.maddob.madroute.api.v1.mapper.MadRouteMapper;
 import com.maddob.madroute.api.v1.model.MadRouteDTO;
 import com.maddob.madroute.domain.GpsPosition;
 import com.maddob.madroute.domain.MadRoute;
+import com.maddob.madroute.parsers.GPXParser;
 import com.maddob.madroute.parsers.NMEAParser;
 import com.maddob.madroute.repositories.MadRouteRepository;
 import com.maddob.madroute.util.GeoUtils;
+import io.jenetics.jpx.GPX;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -20,24 +23,29 @@ public class MadRouteServiceImpl implements MadRouteService {
 
     private final MadRouteRepository madRouteRepository;
     private final NMEAParser nmeaParser;
+    private final GPXParser gpxParser;
     private final MadRouteMapper madRouteMapper;
-    private final GpsPositionMapper gpsPositionMapper;
     private final GeoUtils geoUtils;
 
-    public MadRouteServiceImpl(MadRouteRepository madRouteRepository, NMEAParser nmeaParser,
-                               MadRouteMapper madRouteMapper, GpsPositionMapper gpsPositionMapper,
-                               GeoUtils geoUtils) {
+    public MadRouteServiceImpl(MadRouteRepository madRouteRepository, NMEAParser nmeaParser, GPXParser gpxParser, MadRouteMapper madRouteMapper, GeoUtils geoUtils) {
         this.madRouteRepository = madRouteRepository;
         this.nmeaParser = nmeaParser;
+        this.gpxParser = gpxParser;
         this.madRouteMapper = madRouteMapper;
-        this.gpsPositionMapper = gpsPositionMapper;
         this.geoUtils = geoUtils;
     }
 
     @Override
     public MadRoute save(final MadRoute routeToBeSaved) {
         if (routeToBeSaved.getGpsData() != null) {
-            final List<GpsPosition> gpsPositionList = nmeaParser.parse(routeToBeSaved.getGpsData());
+
+            List<GpsPosition> gpsPositionList;
+            try {
+                gpsPositionList = gpxParser.parse(routeToBeSaved.getGpsData());
+            } catch (IOException ioException) {
+                // data is not GPX formatted, try NMEA
+                gpsPositionList = nmeaParser.parse(routeToBeSaved.getGpsData());
+            }
 
             double distance = 0;
             if (gpsPositionList.size() > 1) {

@@ -1,7 +1,6 @@
 package com.maddob.madroute.bootstrap;
 
 import com.maddob.madroute.domain.MadRoute;
-import com.maddob.madroute.repositories.MadRouteRepository;
 import com.maddob.madroute.services.MadRouteService;
 import com.maddob.madroute.util.DataUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -23,7 +22,10 @@ public class BootstrapSomeData implements ApplicationListener<ContextRefreshedEv
     private Resource gpsDataTestRide;
 
     @Value(value = "classpath:bootstrap/17111003.LOG")
-    private Resource gpsDataRide2Work;
+    private Resource gpsDataRide2WorkSofiaRing;
+
+    @Value(value = "classpath:bootstrap/2018-01-26_26493116_bike-tour_export.gpx")
+    private Resource gpsDataRide2WorkSofiaCenter;
 
     @Autowired
     private final MadRouteService madRouteService;
@@ -39,31 +41,28 @@ public class BootstrapSomeData implements ApplicationListener<ContextRefreshedEv
     @Override
     @Transactional
     public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {
-        final MadRoute sofiaRide = new MadRoute();
-        sofiaRide.setDescription("First test ride in Sofia");
-        sofiaRide.setLocation("Sofia, Bulgaria");
-        sofiaRide.setName("Up to Vitosha Mountain");
-        sofiaRide.setVideoId("1savMPQRWvg");
+        createRoute("First test ride in Sofia", "Up to Vitosha Mountain", "Sofia, Bulgaria",
+                "1savMPQRWvg", gpsDataTestRide);
+        createRoute("Ride to work", "My usual ride to work",
+                "Sofia, Bulgaria","iAqC3FNJboo", gpsDataRide2WorkSofiaRing);
+        createRoute("Another ride to work", "This time through the city center",
+                "Sofia, Bulgaria", "lIv4TpPML-0", gpsDataRide2WorkSofiaCenter);
+    }
 
+    private void createRoute(final String name, final String description, final String location,
+                           final String videoId, final Resource gpsDataResource) {
+
+        final MadRoute route = new MadRoute();
+        route.setName(name);
+        route.setDescription(description);
+        route.setLocation(location);
+        route.setVideoId(videoId);
         try {
-            sofiaRide.setGpsData(dataUtils.getResourceBytes(gpsDataTestRide));
+            route.setGpsData(dataUtils.getResourceBytes(gpsDataResource));
         } catch (IOException exception) {
             log.warn("Cannot set gps data of test ride 1");
         }
-        madRouteService.save(sofiaRide);
-
-        final MadRoute ride2work = new MadRoute();
-        ride2work.setDescription("Just a rest ride to work on my first fixie");
-        ride2work.setLocation("Sofia, Bulgaria");
-        ride2work.setName("Ride to work");
-        ride2work.setVideoId("iAqC3FNJboo");
-        try {
-            ride2work.setGpsData(dataUtils.getResourceBytes(gpsDataRide2Work));
-        } catch (IOException exception) {
-            log.warn("Cannot set gps data of test ride 2");
-        }
-        madRouteService.save(ride2work);
-
+        madRouteService.save(route);
     }
 
 

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gpx xmlns="http://www.topografix.com/GPX/1/1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+     creator="komoot gpx writer" version="1.1"
+     xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd">
+<metadata>
+    <name>Bike Tour</name>
+    <desc/>
+
+    <link href="http://www.komoot.de">
+        <text>komoot homepage</text>
+        <type>text/html</type>
+    </link>
+</metadata>
+
+<trk>
+    <name>Bike Tour</name>
+    <trkseg>
+        <trkpt lat="42.64278545048334" lon="23.381931949428637">
+            <ele>594.2939453125</ele>
+            <time>2018-01-26T05:21:47Z</time>
+        </trkpt>
+        <trkpt lat="42.64269245048334" lon="23.381957949428635">
+            <ele>609.5279453125</ele>
+            <time>2018-01-26T05:22:56Z</time>
+        </trkpt>
+        <trkpt lat="42.64276145048334" lon="23.382039949428634">
+            <ele>609.4229453125</ele>
+            <time>2018-01-26T05:23:23Z</time>
+        </trkpt>
+    </trkseg>
+</trk>
+</gpx>
