@@ -18,5 +18,6 @@ public class MadRouteDTO {
     private List<GpsPositionDTO> gpsData;
     private Double distance;
     private Long duration;
+    private Long timestamp;
     private String base64GpsData;
 }

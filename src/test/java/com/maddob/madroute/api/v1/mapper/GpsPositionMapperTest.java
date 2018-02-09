@@ -5,7 +5,9 @@ import com.maddob.madroute.domain.GpsPosition;
 import org.junit.Test;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.ZoneOffset;
 
 import static org.junit.Assert.assertEquals;
 
@@ -18,6 +20,7 @@ public class GpsPositionMapperTest {
     private final Double longitude = 56.7;
     private final LocalDate date = LocalDate.of(2017, 10, 10);
     private final LocalTime time = LocalTime.of(11, 35, 23);
+    private final LocalDateTime localDateTime = LocalDateTime.of(date, time);
     private final Double velocity = 12.3;
     private final Boolean fixed = true;
     private final Integer quality = 9;
@@ -45,8 +48,7 @@ public class GpsPositionMapperTest {
         // then
         assertEquals(latitude, dto.getLatitude());
         assertEquals(longitude, dto.getLongitude());
-        assertEquals(date, dto.getDate());
-        assertEquals(time, dto.getTime());
+        assertEquals(Long.valueOf(localDateTime.toEpochSecond(ZoneOffset.UTC)), dto.getTimestamp());
         assertEquals(velocity, dto.getVelocity());
         assertEquals(fixed, dto.getFixed());
         assertEquals(quality, dto.getQuality());
@@ -60,8 +62,7 @@ public class GpsPositionMapperTest {
         GpsPositionDTO gpsPositionDTO = new GpsPositionDTO();
         gpsPositionDTO.setLatitude(latitude);
         gpsPositionDTO.setLongitude(longitude);
-        gpsPositionDTO.setDate(date);
-        gpsPositionDTO.setTime(time);
+        gpsPositionDTO.setTimestamp(localDateTime.toEpochSecond(ZoneOffset.UTC));
         gpsPositionDTO.setVelocity(velocity);
         gpsPositionDTO.setFixed(fixed);
         gpsPositionDTO.setQuality(quality);
