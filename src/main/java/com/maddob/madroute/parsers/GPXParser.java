@@ -45,12 +45,13 @@ public class GPXParser {
         if (wayPoint == null) {
             return null;
         }
-        final GpsPosition gpsPosition = new GpsPosition();
-        gpsPosition.setLatitude(wayPoint.getLatitude().doubleValue());
-        gpsPosition.setLongitude(wayPoint.getLongitude().doubleValue());
         ZonedDateTime wptTime = wayPoint.getTime().get();
-        gpsPosition.setTime(LocalTime.of(wptTime.getHour(), wptTime.getMinute(), wptTime.getSecond()));
-        gpsPosition.setDate(LocalDate.of(wptTime.getYear(), wptTime.getMonth(), wptTime.getDayOfMonth()));
+        final GpsPosition gpsPosition = GpsPosition.builder()
+            .latitude(wayPoint.getLatitude().doubleValue())
+                .longitude(wayPoint.getLongitude().doubleValue())
+                .time(LocalTime.of(wptTime.getHour(), wptTime.getMinute(), wptTime.getSecond()))
+                .date(LocalDate.of(wptTime.getYear(), wptTime.getMonth(), wptTime.getDayOfMonth()))
+                .build();
         return gpsPosition;
     }
 }

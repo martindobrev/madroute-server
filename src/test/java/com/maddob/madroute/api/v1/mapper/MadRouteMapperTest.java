@@ -6,6 +6,8 @@ import com.maddob.madroute.domain.MadRoute;
 import com.maddob.madroute.parsers.GPXParser;
 import com.maddob.madroute.parsers.NMEAParser;
 import com.maddob.madroute.util.DataUtils;
+import com.maddob.madroute.util.MadRouteNormalizer;
+import com.maddob.madroute.util.SecondsMadRouteNormalizer;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -18,7 +20,6 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Matchers.any;
 
 public class MadRouteMapperTest {
 
@@ -42,10 +43,17 @@ public class MadRouteMapperTest {
     @Mock
     private GPXParser gpxParserMock;
 
+    private MadRouteNormalizer secondsMadRouteNormalizer = new MadRouteNormalizer() {
+        @Override
+        public List<GpsPosition> normalize(List<GpsPosition> gpsPositionList) {
+            return gpsPositionList;
+        }
+    };
+
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        madRouteMapper = new MadRouteMapper(gpsPositionMapperMock, nmeaParserMock, gpxParserMock, dataUtils);
+        madRouteMapper = new MadRouteMapper(gpsPositionMapperMock, nmeaParserMock, gpxParserMock, dataUtils, secondsMadRouteNormalizer);
     }
 
     @Test
@@ -75,8 +83,8 @@ public class MadRouteMapperTest {
         madRoute.setGpsData(byteArray);
 
         final List<GpsPosition> mockGpsPositions = new ArrayList<>();
-        mockGpsPositions.add(new GpsPosition());
-        mockGpsPositions.add(new GpsPosition());
+        mockGpsPositions.add(GpsPosition.builder().build());
+        mockGpsPositions.add(GpsPosition.builder().build());
 
         given(nmeaParserMock.parse(byteArray)).willReturn(mockGpsPositions);
         given(gpxParserMock.parse(byteArray)).willThrow(new IOException());

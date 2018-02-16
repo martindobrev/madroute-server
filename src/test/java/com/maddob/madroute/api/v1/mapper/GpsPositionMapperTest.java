@@ -31,16 +31,17 @@ public class GpsPositionMapperTest {
     public void testModelToDTO() {
 
         // given
-        GpsPosition gpsPosition = new GpsPosition();
-        gpsPosition.setLatitude(latitude);
-        gpsPosition.setLongitude(longitude);
-        gpsPosition.setDate(date);
-        gpsPosition.setTime(time);
-        gpsPosition.setVelocity(velocity);
-        gpsPosition.setFixed(fixed);
-        gpsPosition.setQuality(quality);
-        gpsPosition.setDirection(direction);
-        gpsPosition.setAltitude(altitude);
+        GpsPosition gpsPosition = GpsPosition.builder()
+            .latitude(latitude)
+            .longitude(longitude)
+            .date(date)
+            .time(time)
+            .velocity(velocity)
+            .fixed(fixed)
+            .quality(quality)
+            .direction(direction)
+            .altitude(altitude)
+            .build();
 
         // when
         GpsPositionDTO dto = mapper.modelToDto(gpsPosition);

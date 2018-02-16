@@ -65,7 +65,7 @@ public class NMEAParser {
                 return null;
             }
 
-            final GpsPosition gpsPosition = new GpsPosition();
+            final GpsPosition gpsPosition = GpsPosition.builder().build();
             if (!parts[1].isEmpty()) {
                 if (parts[1].length() > 5) {
                     gpsPosition.setTime(LocalTime.of(

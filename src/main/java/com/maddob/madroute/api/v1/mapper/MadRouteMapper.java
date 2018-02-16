@@ -6,6 +6,8 @@ import com.maddob.madroute.domain.MadRoute;
 import com.maddob.madroute.parsers.GPXParser;
 import com.maddob.madroute.parsers.NMEAParser;
 import com.maddob.madroute.util.DataUtils;
+import com.maddob.madroute.util.MadRouteNormalizer;
+import com.maddob.madroute.util.SecondsMadRouteNormalizer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -28,12 +30,16 @@ public class MadRouteMapper {
     @Autowired
     private final DataUtils dataUtils;
 
+    @Autowired
+    private final MadRouteNormalizer madRouteNormalizer;
 
-    public MadRouteMapper(GpsPositionMapper gpsPositionMapper, NMEAParser nmeaParser, GPXParser gpxParser, DataUtils dataUtils) {
+
+    public MadRouteMapper(GpsPositionMapper gpsPositionMapper, NMEAParser nmeaParser, GPXParser gpxParser, DataUtils dataUtils, MadRouteNormalizer madRouteNormalizer) {
         this.gpsPositionMapper = gpsPositionMapper;
         this.nmeaParser = nmeaParser;
         this.gpxParser = gpxParser;
         this.dataUtils = dataUtils;
+        this.madRouteNormalizer = madRouteNormalizer;
     }
 
     public MadRouteDTO modelToDto(final MadRoute madRouteModel, final boolean includeGpsData) {
@@ -52,7 +58,9 @@ public class MadRouteMapper {
             } catch (IOException ioException) {
                 gpsPositionList = nmeaParser.parse(madRouteModel.getGpsData());
             }
-            dto.setGpsData(gpsPositionList.stream().map(gpsPositionMapper::modelToDto).collect(Collectors.toList()));
+            dto.setGpsData(madRouteNormalizer.normalize(gpsPositionList)
+                    .stream().map(gpsPositionMapper::modelToDto)
+                    .collect(Collectors.toList()));
         }
         return dto;
     }

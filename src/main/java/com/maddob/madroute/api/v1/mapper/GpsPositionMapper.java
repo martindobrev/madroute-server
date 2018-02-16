@@ -27,16 +27,17 @@ public class GpsPositionMapper {
 
         LocalDateTime localDateTime = LocalDateTime.ofEpochSecond(gpsPositionDTO.getTimestamp(), 0, ZoneOffset.UTC);
 
-        final GpsPosition gpsPosition = new GpsPosition();
-        gpsPosition.setLatitude(gpsPositionDTO.getLatitude());
-        gpsPosition.setLongitude(gpsPositionDTO.getLongitude());
-        gpsPosition.setAltitude(gpsPositionDTO.getAltitude());
-        gpsPosition.setDate(localDateTime.toLocalDate());
-        gpsPosition.setTime(localDateTime.toLocalTime());
-        gpsPosition.setDirection(gpsPositionDTO.getDirection());
-        gpsPosition.setFixed(gpsPositionDTO.getFixed());
-        gpsPosition.setQuality(gpsPositionDTO.getQuality());
-        gpsPosition.setVelocity(gpsPositionDTO.getVelocity());
+        final GpsPosition gpsPosition = GpsPosition.builder()
+                .latitude(gpsPositionDTO.getLatitude())
+                .longitude(gpsPositionDTO.getLongitude())
+                .altitude(gpsPositionDTO.getAltitude())
+                .date(localDateTime.toLocalDate())
+                .time(localDateTime.toLocalTime())
+                .direction(gpsPositionDTO.getDirection())
+                .fixed(gpsPositionDTO.getFixed())
+                .quality(gpsPositionDTO.getQuality())
+                .velocity(gpsPositionDTO.getVelocity())
+                .build();
         return gpsPosition;
     }
 }
