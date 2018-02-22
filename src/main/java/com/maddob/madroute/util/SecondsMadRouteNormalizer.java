@@ -44,8 +44,7 @@ public class SecondsMadRouteNormalizer implements MadRouteNormalizer {
                 final double latStepDiff = (maxLat - minLat) / (double) initialDifference;
                 final double lngStepDiff = (maxLng - minLng) / (double) initialDifference;
                 // final double altStepDiff = (maxAlt - minAlt) / (double) initialDifference;
-                GpsPosition base = current;
-                GpsPosition calculatedNext = null;
+                GpsPosition calculatedNext;
                 int i = 1;
                 while (i < initialDifference) {
                     calculatedNext = GpsPosition.builder()
@@ -54,6 +53,7 @@ public class SecondsMadRouteNormalizer implements MadRouteNormalizer {
                             // .altitude(minAlt + altStepDiff * (double) i)
                             .time(current.getTime().plusSeconds(i))
                             .date(current.getDate())
+                            .generated(true)
                             .build();
                     gpsPositions.add(calculatedNext);
                     i++;

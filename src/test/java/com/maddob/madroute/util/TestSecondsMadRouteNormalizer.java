@@ -12,12 +12,10 @@ import static org.junit.Assert.assertNotNull;
 
 public class TestSecondsMadRouteNormalizer {
 
-    private List<GpsPosition> eachSecondGpsPositionList;
-    private List<GpsPosition> intervalsBetweenGpsPositionList;
 
     private SecondsMadRouteNormalizer secondsMadRouteNormalizer = new SecondsMadRouteNormalizer();
 
-    private final List<GpsPosition> createEachSecondGpsPositionList() {
+    private List<GpsPosition> createEachSecondGpsPositionList() {
         final List<GpsPosition> positions = new ArrayList<>();
         LocalTime testTime = LocalTime.of(10, 0, 0);
         positions.add(GpsPosition.builder().latitude(10d).longitude(10d).altitude(10d).time(testTime).build());
@@ -27,7 +25,7 @@ public class TestSecondsMadRouteNormalizer {
         return positions;
     }
 
-    private final List<GpsPosition> createGpsPositionListWithThreeSecondsInterval() {
+    private List<GpsPosition> createGpsPositionListWithThreeSecondsInterval() {
         final List<GpsPosition> positions = new ArrayList<>();
         LocalTime testTime = LocalTime.of(10, 0, 0);
         positions.add(GpsPosition.builder().latitude(10d).longitude(10d).altitude(10d).time(testTime).build());
@@ -87,8 +85,11 @@ public class TestSecondsMadRouteNormalizer {
             final GpsPosition normalizedTestPosition = normalizedPositions.get(i);
             assertEquals(Double.valueOf(10d + i) , normalizedTestPosition.getLatitude());
             assertEquals(Double.valueOf(10d + i), normalizedTestPosition.getLatitude());
-            assertEquals(Double.valueOf(10d + i), normalizedTestPosition.getAltitude());
             assertEquals(LocalTime.of(10, 0, 0).plusSeconds(i), normalizedTestPosition.getTime());
+            if (i == 1 || i == 2) {
+                assertEquals("Generated position " + i + " shall have property 'generated' set to true",
+                        true, normalizedTestPosition.getGenerated());
+            }
         }
     }
 }

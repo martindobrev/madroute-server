@@ -26,6 +26,7 @@ public class GpsPositionMapperTest {
     private final Integer quality = 9;
     private final Double direction = 13.7;
     private final Double altitude = 56.8;
+    private final Boolean generated = false;
 
     @Test
     public void testModelToDTO() {
@@ -41,6 +42,7 @@ public class GpsPositionMapperTest {
             .quality(quality)
             .direction(direction)
             .altitude(altitude)
+            .generated(generated)
             .build();
 
         // when
@@ -55,20 +57,24 @@ public class GpsPositionMapperTest {
         assertEquals(quality, dto.getQuality());
         assertEquals(direction, dto.getDirection());
         assertEquals(altitude, dto.getAltitude());
+        assertEquals(generated, dto.getGenerated());
     }
 
     @Test
     public void testDtoToModel() {
         // given
-        GpsPositionDTO gpsPositionDTO = new GpsPositionDTO();
-        gpsPositionDTO.setLatitude(latitude);
-        gpsPositionDTO.setLongitude(longitude);
-        gpsPositionDTO.setTimestamp(localDateTime.toEpochSecond(ZoneOffset.UTC));
-        gpsPositionDTO.setVelocity(velocity);
-        gpsPositionDTO.setFixed(fixed);
-        gpsPositionDTO.setQuality(quality);
-        gpsPositionDTO.setDirection(direction);
-        gpsPositionDTO.setAltitude(altitude);
+        GpsPositionDTO gpsPositionDTO = GpsPositionDTO.builder()
+            .latitude(latitude)
+            .longitude(longitude)
+            .timestamp(localDateTime.toEpochSecond(ZoneOffset.UTC))
+            .velocity(velocity)
+            .fixed(fixed)
+            .quality(quality)
+            .direction(direction)
+            .altitude(altitude)
+            .generated(generated)
+            .build();
+
 
         // when
         GpsPosition model = mapper.dtoToModel(gpsPositionDTO);
@@ -83,6 +89,7 @@ public class GpsPositionMapperTest {
         assertEquals(quality, model.getQuality());
         assertEquals(direction, model.getDirection());
         assertEquals(altitude, model.getAltitude());
+        assertEquals(generated, model.getGenerated());
     }
 
 }

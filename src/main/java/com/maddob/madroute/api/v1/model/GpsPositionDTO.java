@@ -1,10 +1,12 @@
 package com.maddob.madroute.api.v1.model;
 
+import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 @Data
 @EqualsAndHashCode
+@Builder
 public class GpsPositionDTO {
     private Double latitude;
     private Double longitude;
@@ -14,4 +16,5 @@ public class GpsPositionDTO {
     private Integer quality;
     private Double direction;
     private Double altitude;
+    private Boolean generated;
 }

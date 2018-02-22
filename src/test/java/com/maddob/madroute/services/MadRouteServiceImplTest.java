@@ -28,10 +28,10 @@ public class MadRouteServiceImplTest {
     private static final String GPX_3_POINTS = "gpx/simple_gpx_data.gpx";
 
     @Autowired
-    MadRouteService madRouteService;
+    private MadRouteService madRouteService;
 
     @Autowired
-    DataUtils dataUtils;
+    private DataUtils dataUtils;
 
     @Before
     public void setUp() {
@@ -111,7 +111,7 @@ public class MadRouteServiceImplTest {
         assertNotNull(dtoExtractedFromDb.getDistance());
         assertNotNull(dtoExtractedFromDb.getDuration());
         assertNotNull(dtoExtractedFromDb.getGpsData());
-        assertEquals(3, dtoExtractedFromDb.getGpsData().size());
+        assertEquals(97, dtoExtractedFromDb.getGpsData().size());
 
     }
 

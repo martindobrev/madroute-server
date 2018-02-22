@@ -22,5 +22,6 @@ public class GpsPosition {
     private Integer quality;
     private Double direction;
     private Double altitude;
+    private Boolean generated;
 
 }
