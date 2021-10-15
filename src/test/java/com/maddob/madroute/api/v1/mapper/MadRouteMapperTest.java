@@ -8,8 +8,9 @@ import com.maddob.madroute.parsers.NMEAParser;
 import com.maddob.madroute.util.DataUtils;
 import com.maddob.madroute.util.MadRouteNormalizer;
 import com.maddob.madroute.util.SecondsMadRouteNormalizer;
-import org.junit.Before;
-import org.junit.Test;
+import org.aspectj.lang.annotation.Before;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
@@ -17,8 +18,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.BDDMockito.given;
 
 public class MadRouteMapperTest {
@@ -50,7 +51,7 @@ public class MadRouteMapperTest {
         }
     };
 
-    @Before
+    @BeforeEach
     public void setUp() {
         MockitoAnnotations.initMocks(this);
         madRouteMapper = new MadRouteMapper(gpsPositionMapperMock, nmeaParserMock, gpxParserMock, dataUtils, secondsMadRouteNormalizer);

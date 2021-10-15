@@ -3,9 +3,8 @@ package com.maddob.madroute.controllers.v1;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.maddob.madroute.api.v1.model.MadRouteDTO;
 import com.maddob.madroute.services.MadRouteService;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -26,7 +25,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@RunWith(SpringRunner.class)
 @WebMvcTest(controllers = MadRouteRestController.class)
 public class MadRouteRestControllerTest {
 
@@ -40,7 +38,7 @@ public class MadRouteRestControllerTest {
     private ObjectMapper objectMapper = new ObjectMapper();
 
 
-    @Before
+    @BeforeEach
     public void setUp() {
         final MadRouteDTO madRouteOneDTO = createMadRouteDTO();
 

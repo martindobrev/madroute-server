@@ -1,21 +1,23 @@
 package com.maddob.madroute.parsers;
 
 import com.maddob.madroute.domain.GpsPosition;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockMultipartFile;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.springframework.test.util.AssertionErrors.*;
+
 
 public class NMEAParserTest {
 
     private NMEAParser parser;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         parser = new NMEAParser();
     }
@@ -49,9 +51,9 @@ public class NMEAParserTest {
         assertNotNull("The GpsPosition object shall not be null", gpsPosition);
         assertTrue(0.0001 > gpsPosition.getLatitude() - 42.623925);
         assertTrue(0.0001 > gpsPosition.getLongitude() - 23.367762);
-        assertEquals(gpsPosition.getVelocity(), new Double(12.17));
-        assertEquals(LocalTime.of(13, 34, 46), gpsPosition.getTime());
-        assertEquals(LocalDate.of(2017, 11, 5), gpsPosition.getDate());
+        assertEquals("", gpsPosition.getVelocity(), new Double(12.17));
+        assertEquals("", LocalTime.of(13, 34, 46), gpsPosition.getTime());
+        assertEquals("", LocalDate.of(2017, 11, 5), gpsPosition.getDate());
     }
 
     @Test
@@ -100,9 +102,9 @@ public class NMEAParserTest {
         assertNotNull("The GpsPosition object shall not be null", gpsPosition);
         assertTrue(0.0001 > gpsPosition.getLatitude() - 42.623925);
         assertTrue(0.0001 > gpsPosition.getLongitude() - 23.367762);
-        assertEquals(gpsPosition.getVelocity(), new Double(12.17));
-        assertEquals(LocalTime.of(13, 34, 46), gpsPosition.getTime());
-        assertEquals(LocalDate.of(2017, 11, 5), gpsPosition.getDate());
+        assertEquals("", gpsPosition.getVelocity(), new Double(12.17));
+        assertEquals("", LocalTime.of(13, 34, 46), gpsPosition.getTime());
+        assertEquals("", LocalDate.of(2017, 11, 5), gpsPosition.getDate());
     }
 
     @Test
@@ -124,8 +126,8 @@ public class NMEAParserTest {
         assertNotNull("The GpsPosition object shall not be null", gpsPosition);
         //assertTrue(0.0001 > gpsPosition.getLatitude() - 42.623925);
         //assertTrue(0.0001 > gpsPosition.getLongitude() - 23.367762);
-        assertEquals(gpsPosition.getVelocity(), new Double(9.7));
-        assertEquals(LocalTime.of(18, 45, 59), gpsPosition.getTime());
-        assertEquals(LocalDate.of(2017, 12, 18), gpsPosition.getDate());
+        assertEquals("", gpsPosition.getVelocity(), new Double(9.7));
+        assertEquals("", LocalTime.of(18, 45, 59), gpsPosition.getTime());
+        assertEquals("", LocalDate.of(2017, 12, 18), gpsPosition.getDate());
     }
 }

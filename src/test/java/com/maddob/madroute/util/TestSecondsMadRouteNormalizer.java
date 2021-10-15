@@ -1,14 +1,16 @@
 package com.maddob.madroute.util;
 
 import com.maddob.madroute.domain.GpsPosition;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.springframework.test.util.AssertionErrors.assertTrue;
+
 
 public class TestSecondsMadRouteNormalizer {
 
@@ -87,8 +89,8 @@ public class TestSecondsMadRouteNormalizer {
             assertEquals(Double.valueOf(10d + i), normalizedTestPosition.getLatitude());
             assertEquals(LocalTime.of(10, 0, 0).plusSeconds(i), normalizedTestPosition.getTime());
             if (i == 1 || i == 2) {
-                assertEquals("Generated position " + i + " shall have property 'generated' set to true",
-                        true, normalizedTestPosition.getGenerated());
+                assertTrue("Generated position " + i + " shall have property 'generated' set to true",
+                        normalizedTestPosition.getGenerated());
             }
         }
     }

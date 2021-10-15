@@ -17,6 +17,7 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class MadRouteServiceImpl implements MadRouteService {
@@ -86,6 +87,10 @@ public class MadRouteServiceImpl implements MadRouteService {
 
     @Override
     public MadRouteDTO getMadRoute(Long id) {
-        return madRouteMapper.modelToDto(this.madRouteRepository.findOne(id), true);
+        Optional<MadRoute> madRoute = this.madRouteRepository.findById(id);
+        if (!madRoute.isPresent()) {
+            return null;
+        }
+        return madRouteMapper.modelToDto(madRoute.get(), true);
     }
 }

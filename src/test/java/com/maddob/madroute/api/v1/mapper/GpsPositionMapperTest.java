@@ -2,14 +2,15 @@ package com.maddob.madroute.api.v1.mapper;
 
 import com.maddob.madroute.api.v1.model.GpsPositionDTO;
 import com.maddob.madroute.domain.GpsPosition;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneOffset;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 
 public class GpsPositionMapperTest {
 

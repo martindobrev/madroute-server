@@ -5,9 +5,9 @@ import com.maddob.madroute.api.v1.model.MadRouteDTO;
 import com.maddob.madroute.domain.MadRoute;
 import com.maddob.madroute.util.DataUtils;
 import org.hamcrest.Matchers;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -18,9 +18,11 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-@RunWith(SpringRunner.class)
+
 @SpringBootTest
 public class MadRouteServiceImplTest {
 
@@ -33,7 +35,7 @@ public class MadRouteServiceImplTest {
     @Autowired
     private DataUtils dataUtils;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         MockitoAnnotations.initMocks(this);
     }
@@ -46,7 +48,7 @@ public class MadRouteServiceImplTest {
         List<MadRouteDTO> madRouteDTOList = madRouteService.getMadRoutes();
 
         // then
-        assertNotNull("The returned list shall not be null", madRouteDTOList);
+        assertNotNull(madRouteDTOList);
         assertEquals(3, madRouteDTOList.size());
     }
 
