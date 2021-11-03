@@ -41,6 +41,10 @@ public class DataUtils {
         return DatatypeConverter.printBase64Binary(unwrapByteArray(byteArray));
     }
 
+    public String byteArrayAsBase64String(final byte[] byteArray) {
+        return DatatypeConverter.printBase64Binary(byteArray);
+    }
+
     public Byte[] base64StringToByteArray(final String base64String) {
         return wrapByteArray(DatatypeConverter.parseBase64Binary(base64String));
     }
