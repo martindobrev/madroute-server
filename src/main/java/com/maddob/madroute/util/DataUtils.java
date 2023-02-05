@@ -3,13 +3,16 @@ package com.maddob.madroute.util;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 
-import javax.xml.bind.DatatypeConverter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
+import java.util.Base64;
 
 @Component
 public class DataUtils {
+
+    private final Base64.Encoder encoder = Base64.getEncoder();
+    private final Base64.Decoder decoder = Base64.getDecoder();
 
     public Byte[] getResourceBytes(final String filePath) throws IOException, URISyntaxException {
         final InputStream inputStream = this.getClass().getClassLoader()
@@ -38,15 +41,15 @@ public class DataUtils {
     }
 
     public String byteArrayAsBase64String(final Byte[] byteArray) {
-        return DatatypeConverter.printBase64Binary(unwrapByteArray(byteArray));
+        return encoder.encodeToString(unwrapByteArray(byteArray));
     }
 
     public String byteArrayAsBase64String(final byte[] byteArray) {
-        return DatatypeConverter.printBase64Binary(byteArray);
+        return encoder.encodeToString(byteArray);
     }
 
     public Byte[] base64StringToByteArray(final String base64String) {
-        return wrapByteArray(DatatypeConverter.parseBase64Binary(base64String));
+        return wrapByteArray(decoder.decode(base64String));
     }
 
     public byte[] unwrapByteArray(final Byte[] byteObjects) {

@@ -1,6 +1,5 @@
 package com.maddob.madroute.services;
 
-import com.maddob.madroute.api.v1.mapper.GpsPositionMapper;
 import com.maddob.madroute.api.v1.mapper.MadRouteMapper;
 import com.maddob.madroute.api.v1.model.MadRouteDTO;
 import com.maddob.madroute.domain.GpsPosition;
@@ -9,7 +8,6 @@ import com.maddob.madroute.parsers.GPXParser;
 import com.maddob.madroute.parsers.NMEAParser;
 import com.maddob.madroute.repositories.MadRouteRepository;
 import com.maddob.madroute.util.GeoUtils;
-import io.jenetics.jpx.GPX;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
