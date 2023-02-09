@@ -3,13 +3,16 @@ package com.maddob.madroute.controllers.v1;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.maddob.madroute.api.v1.model.MadRouteDTO;
 import com.maddob.madroute.services.MadRouteService;
+import com.maddob.madroute.util.DataUtils;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.ArrayList;
@@ -17,20 +20,24 @@ import java.util.List;
 
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.hamcrest.core.IsEqual.equalTo;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Matchers.any;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(controllers = MadRouteRestController.class)
+@WebMvcTest(controllers = {MadRouteRestController.class})
+@Import(MadRouteRestController.class)
 public class MadRouteRestControllerTest {
 
 
     @MockBean
     MadRouteService madRouteServiceMock;
+    
+    @MockBean
+    DataUtils dataUtils;
 
     @Autowired
     MockMvc mockMvc;
@@ -69,7 +76,7 @@ public class MadRouteRestControllerTest {
     @Test
     public void testCreateNewRoute()  throws Exception {
         String jsonMadRouteDTO = objectMapper.writeValueAsString(createMadRouteDTO());
-        mockMvc.perform(post("/api/v1/routes").contentType(MediaType.APPLICATION_JSON).content(jsonMadRouteDTO))
+        mockMvc.perform(post("/api/v1/routes").contentType(MediaType.MULTIPART_FORM_DATA).content(jsonMadRouteDTO))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id", equalTo(12)));
     }

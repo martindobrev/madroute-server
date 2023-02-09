@@ -41,7 +41,7 @@ public class BootstrapSomeData implements ApplicationListener<ContextRefreshedEv
     @Override
     @Transactional
     public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {
-        createRoute("First test ride in Sofia", "Up to Vitosha Mountain", "Sofia, Bulgaria",
+        createRoute("Ftest ride in Sofia", "Uirst p to Vitosha Mountain", "Sofia, Bulgaria",
                 "1savMPQRWvg", gpsDataTestRide);
         createRoute("Ride to work", "My usual ride to work",
                 "Sofia, Bulgaria","iAqC3FNJboo", gpsDataRide2WorkSofiaRing);
